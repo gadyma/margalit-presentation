@@ -1214,6 +1214,9 @@ img.ftph{cursor:zoom-in}
 .ftlab{font-size:.74rem;opacity:.72}
 .ftchip{font:inherit;font-size:.72rem;padding:3px 10px;border-radius:14px;border:1px solid;cursor:pointer;background:#182634;border-color:#3a586f;color:#eaf1f6}
 .ftchip.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
+#ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
+#ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
+#ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto}
 
 /* ================= LIGHT AGED-PAPER THEME ================= */
 :root{
@@ -1254,7 +1257,7 @@ body{background:var(--night);color:var(--parchment)}
       <button id="ft-back" class="ftbtn">◄ חזרה</button>
       <button id="ft-reset" class="ftbtn">↺ התחלה</button>
       <button id="ft-fit" class="ftbtn">⤢ התאם</button>
-      <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוסתר</button>
+      <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
       <button id="ft-zin" class="ftbtn">＋</button>
       <button id="ft-zout" class="ftbtn">－</button>
       <span class="fthint">לחצו על אדם למקם אותו במרכז · על תמונה להגדלה · גררו והשתמשו בגלגלת להזזה וזום · חצים במקלדת מדפדפים בין השקפים</span>
@@ -1305,20 +1308,36 @@ body{background:var(--night);color:var(--parchment)}
  };
  var CH={};Object.keys(P).forEach(function(id){var o=P[id];['f','m'].forEach(function(g){if(o[g]&&P[o[g]]){(CH[o[g]]=CH[o[g]]||[]).push(id);}});});
  function kidsOf(id){return CH[id]||[];}
- var DEFAULT='gady',focal=DEFAULT,showSibs=false,view={x:14,y:14,s:.6};
+ var DEFAULT='gady',focal=DEFAULT,showSibs=true,view={x:14,y:14,s:.6};
  var wrap=document.getElementById('ftwrap'),canvas=document.getElementById('ftcanvas');
  if(!wrap||!canvas)return;
  function dstr(o){var a=o.b!=null?(''+o.b):'',b=o.d!=null?(''+o.d):'';if(a&&b)return a+'–'+b;if(b)return'נפ׳ '+b;return a;}
  function card(id,isF){var o=P[id],d=document.createElement('div');d.className='ftcard '+(o.s==='f'?'f':'m')+(isF?' focal':'');var ph;if(o.p){ph=document.createElement('img');ph.className='ftph';ph.src=o.p;ph.alt=o.n;ph.addEventListener('click',function(e){e.stopPropagation();var lb=document.getElementById('lb');if(!lb)return;lb.querySelector('img').src=o.p;var c=lb.querySelector('.lbcap');if(c)c.textContent=o.n+(dstr(o)?' · '+dstr(o):'');lb.classList.remove('hastog');lb.classList.add('on');});}else{ph=document.createElement('div');ph.className='ftph ftsil';}d.appendChild(ph);var nm=document.createElement('div');nm.className='ftname';nm.textContent=o.n;d.appendChild(nm);var ds=dstr(o);if(ds){var dd=document.createElement('div');dd.className='ftdate';dd.textContent=ds;d.appendChild(dd);}d.addEventListener('click',function(e){e.stopPropagation();setFocal(id);});return d;}
  function node(id,depth){var n=document.createElement('div');n.className='ftnode';n.appendChild(card(id,depth===0));var o=P[id];if(depth<4&&((o.f&&P[o.f])||(o.m&&P[o.m]))){var a=document.createElement('div');a.className='ftanc';if(o.f&&P[o.f])a.appendChild(node(o.f,depth+1));if(o.m&&P[o.m])a.appendChild(node(o.m,depth+1));n.appendChild(a);}return n;}
  function sibsOf(id){var o=P[id],set={};['f','m'].forEach(function(g){var pid=o[g];if(pid&&CH[pid])CH[pid].forEach(function(k){if(k!==id)set[k]=1;});});return Object.keys(set);}
+ function spousesOf(id){var set={};(CH[id]||[]).forEach(function(kid){var k=P[kid];[k.f,k.m].forEach(function(pid){if(pid&&pid!==id&&P[pid])set[pid]=1;});});return Object.keys(set);}
  function chip(id){var o=P[id],c=document.createElement('button');c.className='ftchip '+(o.s==='f'?'f':'m');c.textContent=o.n;c.addEventListener('click',function(e){e.stopPropagation();setFocal(id);});return c;}
  function applyView(){canvas.style.transform='translate('+view.x+'px,'+view.y+'px) scale('+view.s+')';}
  function fitView(){var ch=canvas.scrollHeight,cw=canvas.scrollWidth,wh=wrap.clientHeight,ww=wrap.clientWidth;if(wh<50||ch<10)return;var s=Math.min((wh-16)/ch,(ww-16)/cw,1);view.s=Math.max(.38,Math.min(1,s));view.x=12;view.y=Math.max(8,(wh-ch*view.s)/2);applyView();}
- function render(){canvas.innerHTML='';canvas.appendChild(node(focal,0));var o=P[focal];var kids=document.getElementById('ftkids');kids.innerHTML='';var kk=kidsOf(focal);if(kk.length){var l=document.createElement('span');l.className='ftlab';l.textContent='↓ ילדים: ';kids.appendChild(l);kk.forEach(function(k){if(P[k])kids.appendChild(chip(k));});}var sb=document.getElementById('ftsibs');sb.innerHTML='';sb.style.display=showSibs?'flex':'none';if(showSibs){var ss=sibsOf(focal),l2=document.createElement('span');l2.className='ftlab';l2.textContent='אחים/אחיות: ';sb.appendChild(l2);if(ss.length)ss.forEach(function(k){sb.appendChild(chip(k));});else{var e=document.createElement('span');e.className='ftlab';e.textContent='(לא רשומים)';sb.appendChild(e);}}var p=document.getElementById('ftpath');if(p)p.textContent='מציג את אבותיו/ה של: '+o.n;applyView();}
+ function render(){
+   canvas.innerHTML='';
+   var o=P[focal];
+   var root=document.createElement('div');root.className='ftnode';
+   var grp=document.createElement('div');grp.className='ftgen';
+   (showSibs?sibsOf(focal):[]).forEach(function(sid){var sn=document.createElement('div');sn.className='ftnode';sn.appendChild(card(sid));grp.appendChild(sn);});
+   var couple=document.createElement('div');couple.className='ftcouple';couple.appendChild(card(focal,true));
+   spousesOf(focal).forEach(function(spid){if(P[spid]){var lk=document.createElement('span');lk.className='ftmar';lk.textContent='⚭';couple.appendChild(lk);couple.appendChild(card(spid));}});
+   grp.appendChild(couple);root.appendChild(grp);
+   if((o.f&&P[o.f])||(o.m&&P[o.m])){var anc=document.createElement('div');anc.className='ftanc';if(o.f&&P[o.f])anc.appendChild(node(o.f,1));if(o.m&&P[o.m])anc.appendChild(node(o.m,1));root.appendChild(anc);}
+   canvas.appendChild(root);
+   var kids=document.getElementById('ftkids');kids.innerHTML='';var kk=kidsOf(focal);if(kk.length){var l=document.createElement('span');l.className='ftlab';l.textContent='↓ ילדים: ';kids.appendChild(l);kk.forEach(function(k){if(P[k])kids.appendChild(chip(k));});}
+   var sb=document.getElementById('ftsibs');if(sb){sb.innerHTML='';sb.style.display='none';}
+   var p=document.getElementById('ftpath');if(p)p.textContent='במרכז: '+o.n+' · לחצו על אח/אחות, בן/בת־זוג או הורה כדי להמשיך';
+   applyView();
+ }
  var hist=[];
  function setFocal(id,noPush){if(!P[id])return;if(!noPush&&id!==focal)hist.push(focal);focal=id;render();fitView();}
- document.getElementById('ft-reset').addEventListener('click',function(e){e.stopPropagation();hist=[];focal=DEFAULT;showSibs=false;document.getElementById('ft-sibs').textContent='אחים/אחיות: מוסתר';render();fitView();});
+ document.getElementById('ft-reset').addEventListener('click',function(e){e.stopPropagation();hist=[];focal=DEFAULT;showSibs=true;document.getElementById('ft-sibs').textContent='אחים/אחיות: מוצג';render();fitView();});
  document.getElementById('ft-back').addEventListener('click',function(e){e.stopPropagation();if(hist.length)setFocal(hist.pop(),true);});
  document.getElementById('ft-fit').addEventListener('click',function(e){e.stopPropagation();fitView();});
  document.getElementById('ft-sibs').addEventListener('click',function(){showSibs=!showSibs;this.textContent='אחים/אחיות: '+(showSibs?'מוצג':'מוסתר');render();});
