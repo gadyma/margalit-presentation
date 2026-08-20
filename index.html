@@ -312,9 +312,10 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
 .routemap .cap{fill:var(--ash-dim);font-family:var(--sans);font-size:12px;letter-spacing:.12em}
 
 /* memorial */
-.mem-names{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.9rem 2rem;max-width:60ch}
-.mem-names div{font-family:var(--serif);font-size:1.22rem;padding-block:.38rem;border-bottom:1px solid var(--line)}
-.mem-names span{display:block;font-family:var(--sans);font-size:.88rem;color:var(--ash-dim);letter-spacing:.04em}
+.mem-names{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.1rem 3.2rem;max-width:82ch;margin-inline:auto;text-align:start}
+.mem-col h4{font-family:var(--serif);color:var(--ember);font-size:1.02rem;letter-spacing:.03em;margin:0 0 .35rem;padding-bottom:.3rem;border-bottom:1px solid rgba(198,66,30,.4)}
+.mem-names .nm{font-family:var(--serif);font-size:1.18rem;padding-block:.34rem;border-bottom:1px solid var(--line)}
+.mem-names .nm span{display:block;font-family:var(--sans);font-size:.85rem;color:var(--ash-dim);letter-spacing:.04em;line-height:1.4}
 
 /* fragments */
 .fr{opacity:0;transform:translateY(10px);transition:opacity .55s ease,transform .55s ease}
@@ -1582,17 +1583,23 @@ img.ftph{cursor:zoom-in}
     <h2>אלה שלא הגיעו</h2>
     <p class="small fr" style="max-width:62ch;margin:.15rem auto .5rem;color:var(--ash)">ואלה רק <em>אחדים</em> מהם — השמות שהצלחנו עד כה לשחזר. משפחות שלמות, משני הצדדים, נספו — ורבים נוספים עדיין ללא שם.</p>
     <div class="mem-names">
-      <div>יעקב שפירו<span>אביה של אילנה · נרצח עם רוזה, ~1942</span></div>
-      <div>רוזה רחל שפירו<span>אמהּ · נרצחה יחד עם יעקב, ~1942</span></div>
-      <div>שרה שפירו<span>הסבתא · וילנה 1944 · לפי עדות: הושלכה עם נכדיה מקומה חמישית</span></div>
-      <div>לאה גולבר<span>הסבתא (קו האם) · נספתה בשואה</span></div>
-      <div>זוסמן שפירו<span>הדוד · וילנה 1944</span></div>
-      <div>גולדה קפלינסקי ובנותיה<span>נינה וגֶסְיָה · יחד עם שרה · 1944</span></div>
-      <div>חנה מרגוליס<span>אם יוסף (צד האב) · קובנה, יולי 1944</span></div>
-      <div>שמואל («מוּלֶה») מרגוליס<span>דוד יוסף (אחי יעקב) · קובנה, יולי 1944 · הבונקר הוצת</span></div>
-      <div>אליעזר בְּרֶנֶר<span>דוד יוסף (אחי חנה) · קובנה, 1944</span></div>
-      <div>נתן בְּרֶנֶר<span>דוד יוסף (אחי חנה) · קובנה, יולי 1944</span></div>
-      <div>יעקב מרגוליס<span>אביו של יוסף, סבו של גדי · נרצח בגטו קובנה, 1944</span></div>
+      <div class="mem-col">
+        <h4>מִצַּד אִמָּא · שפירו־גולבר · וילנה</h4>
+        <div class="nm">יעקב שפירו<span>אביה של אילנה · נרצח עם רוזה, ~1942</span></div>
+        <div class="nm">רוזה רחל שפירו<span>אמהּ · נרצחה יחד עם יעקב, ~1942</span></div>
+        <div class="nm">שרה שפירו<span>הסבתא · וילנה 1944 · לפי עדות: הושלכה עם נכדיה מקומה חמישית</span></div>
+        <div class="nm">לאה גולבר<span>הסבתא (קו האם) · נספתה בשואה</span></div>
+        <div class="nm">זוסמן שפירו<span>הדוד · וילנה 1944</span></div>
+        <div class="nm">גולדה קפלינסקי ובנותיה<span>נינה וגֶסְיָה · יחד עם שרה · 1944</span></div>
+      </div>
+      <div class="mem-col">
+        <h4>מִצַּד אַבָּא · מרגוליס־ברנר · קובנה</h4>
+        <div class="nm">יעקב מרגוליס<span>אביו של יוסף, סבו של גדי · גטו קובנה, 1944</span></div>
+        <div class="nm">חנה מרגוליס<span>אם יוסף · קובנה, יולי 1944</span></div>
+        <div class="nm">שמואל («מוּלֶה») מרגוליס<span>אחי יעקב · קובנה, יולי 1944 · הבונקר הוצת</span></div>
+        <div class="nm">אליעזר בְּרֶנֶר<span>דוד יוסף (אחי חנה) · קובנה, 1944</span></div>
+        <div class="nm">נתן בְּרֶנֶר<span>דוד יוסף (אחי חנה) · קובנה, יולי 1944</span></div>
+      </div>
     </div>
     <p class="small fr" style="margin-top:.9rem;color:var(--ash)">צד האב — משפחת מַרְגוֹלִיס־בְּרֶנֶר מקובנה — נחרב כמעט כולו בחיסול גטו קובנה, יולי 1944. אחדים כבר תועדו בשם; גורלם של אחרים — טרם נמצא ברשומות.</p>
     <p class="small fr" style="margin-top:.8rem">אילנה גדלה בלי הוריה. ארבעה דורות אחר־כך, המשפחה יודעת לקרוא בשמם של אביה, אמהּ,
@@ -1728,14 +1735,14 @@ body{background:var(--night);color:var(--parchment)}
   <div id="jm-static">
     <button data-s="1">🕯️ פתיחה</button>
     <button data-s="5">👧 אילנה · צד אמא</button>
-    <button data-s="22">🌳 עץ אמא · שפירו־גולבר</button>
-    <button data-s="27">👦 קובנה · צד אבא</button>
-    <button data-s="38">🌳 עץ אבא · מרגוליס־ברנר</button>
-    <button data-s="40">🌲 העץ האינטראקטיבי</button>
-    <button data-s="41">💞 המפגש</button>
-    <button data-s="42">👨‍👩‍👧‍👦 הדורות הבאים</button>
-    <button data-s="49">🕯️ אזכרה</button>
-    <button data-s="54">✨ סיום · קריאה לפעולה</button>
+    <button data-s="21">🌳 עץ אמא · שפירו־גולבר</button>
+    <button data-s="26">👦 קובנה · צד אבא</button>
+    <button data-s="37">🌳 עץ אבא · מרגוליס־ברנר</button>
+    <button data-s="39">🌲 העץ האינטראקטיבי</button>
+    <button data-s="40">💞 המפגש</button>
+    <button data-s="41">👨‍👩‍👧‍👦 הדורות הבאים</button>
+    <button data-s="48">🕯️ אזכרה</button>
+    <button data-s="53">✨ סיום · קריאה לפעולה</button>
   </div>
 </div>
 <script>
