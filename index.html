@@ -1284,9 +1284,12 @@ img.ftph{cursor:zoom-in}
 #ftcanvas.vert .ftanc>.ftnode::before{left:50%;top:100%;bottom:auto;width:2px;height:11px;background:rgba(212,175,120,.45)}
 #ftcanvas.vert .ftgen{flex-direction:row;align-items:flex-end;gap:10px}
 #ftcanvas.vert .ftplus{right:auto;left:50%;bottom:auto;top:-13px;transform:translateX(-50%)}
-#tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:10px 14px;overflow:auto;transform:none!important}
-#tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important}
-#tree-slide.ftfull #ftwrap{height:calc(100vh - 128px)}
+#tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:8px 14px;overflow:hidden;transform:none!important}
+#tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important;display:flex;flex-direction:column;height:calc(100vh - 16px)}
+#tree-slide.ftfull .eyebrow,#tree-slide.ftfull h2{display:none}
+#tree-slide.ftfull #ftwrap{flex:1 1 auto;height:auto!important;min-height:120px}
+#tree-slide.ftfull #ftkids,#tree-slide.ftfull #ftsibs{flex:0 0 auto}
+#tree-slide.ftfull #ftinfo{flex:0 0 auto;max-height:18vh;overflow:auto;margin-top:.3rem}
 </style>
 <section class="slide no-fit no-nav" id="tree-slide" data-bg="dark" style="--night:#170f09">
   <div class="wrap" style="max-width:1180px">
