@@ -1222,6 +1222,15 @@ img.ftph{cursor:zoom-in}
 #ftcanvas .ftplus:hover{background:#e9c98c}
 #ftcanvas .ftcard{overflow:visible}
 #ftinfo{max-width:640px;margin:.4rem auto 0;background:rgba(212,175,120,.1);border:1px solid rgba(212,175,120,.32);border-radius:12px;padding:9px 15px;font-size:.86rem;line-height:1.6;color:var(--ash,#e8dcc8);text-align:center;direction:rtl}
+/* vertical orientation (ancestors upward) */
+#ftcanvas.vert .ftnode{flex-direction:column-reverse;align-items:center}
+#ftcanvas.vert .ftanc{flex-direction:row;justify-content:center;gap:16px;padding-bottom:22px}
+#ftcanvas.vert .ftanc::before{left:8%;right:8%;top:auto;bottom:11px;width:auto;height:2px}
+#ftcanvas.vert .ftanc::after{content:'';position:absolute;left:50%;bottom:0;width:2px;height:11px;background:rgba(212,175,120,.45)}
+#ftcanvas.vert .ftanc>.ftnode{margin-left:0}
+#ftcanvas.vert .ftanc>.ftnode::before{left:50%;top:100%;bottom:auto;width:2px;height:11px;background:rgba(212,175,120,.45)}
+#ftcanvas.vert .ftgen{flex-direction:row;align-items:flex-end;gap:10px}
+#ftcanvas.vert .ftplus{right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)}
 #tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:10px 14px;overflow:auto;transform:none!important}
 #tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important}
 #tree-slide.ftfull #ftwrap{height:calc(100vh - 128px)}
@@ -1235,6 +1244,7 @@ img.ftph{cursor:zoom-in}
       <button id="ft-reset" class="ftbtn">↺ התחלה</button>
       <button id="ft-fit" class="ftbtn">⤢ התאם</button>
       <button id="ft-full" class="ftbtn">⛶ מסך מלא</button>
+      <button id="ft-rot" class="ftbtn">⟲ אנכי</button>
       <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
       <button id="ft-zin" class="ftbtn">＋</button>
       <button id="ft-zout" class="ftbtn">－</button>
@@ -1352,6 +1362,7 @@ img.ftph{cursor:zoom-in}
  document.getElementById('ft-fit').addEventListener('click',function(e){e.stopPropagation();fitView();});
  function setFull(on){var s=document.getElementById('tree-slide');if(!s)return;s.classList.toggle('ftfull',on);document.getElementById('ft-full').textContent=on?'✕ יציאה':'⛶ מסך מלא';setTimeout(fitView,70);}
  document.getElementById('ft-full').addEventListener('click',function(e){e.stopPropagation();var s=document.getElementById('tree-slide');setFull(!s.classList.contains('ftfull'));});
+ document.getElementById('ft-rot').addEventListener('click',function(e){e.stopPropagation();canvas.classList.toggle('vert');this.textContent=canvas.classList.contains('vert')?'⟲ אופקי':'⟲ אנכי';setTimeout(fitView,60);});
  document.addEventListener('keydown',function(e){if(e.key==='Escape'){var s=document.getElementById('tree-slide');if(s&&s.classList.contains('ftfull')){setFull(false);}}});
  document.getElementById('ft-sibs').addEventListener('click',function(){showSibs=!showSibs;this.textContent='אחים/אחיות: '+(showSibs?'מוצג':'מוסתר');render();});
  document.getElementById('ft-zin').addEventListener('click',function(){view.s=Math.min(2,view.s+.12);applyView();});
