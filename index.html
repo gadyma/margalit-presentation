@@ -1217,37 +1217,9 @@ img.ftph{cursor:zoom-in}
 #ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
 #ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
 #ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto}
-
-/* ================= LIGHT AGED-PAPER THEME ================= */
-:root{
-  --night:#E7D3A6; --ink:#DEC898; --ink2:#D4BC8B;
-  --parchment:#332415; --paper:#F1E4C6; --ash:#6A5738; --ash-dim:#8A7247;
-  --flame:#BC5A1C; --flame-hi:#8F5A16; --ember:#9B3412; --slate:#43607A;
-  --line:rgba(46,35,24,.20);
-}
-body{background:var(--night);color:var(--parchment)}
-.clue,.card,.branch,.node,.fnode,.route .city{background:rgba(46,35,24,.05) !important}
-.apt{background:rgba(46,35,24,.04) !important}
-.node.hot,.fnode.hot{background:rgba(188,90,28,.16) !important;border-color:var(--flame) !important;color:var(--parchment) !important}
-.chip{background:rgba(188,90,28,.12) !important;border-color:rgba(188,90,28,.30) !important;color:var(--parchment) !important}
-.chip.ghost{background:transparent !important;border-color:var(--ash-dim) !important;color:var(--ash-dim) !important}
-.apt.fam{background:rgba(188,90,28,.12) !important;border-color:rgba(188,90,28,.42) !important}
-.apt.fam .who{color:var(--flame) !important}
-.callout{background:var(--paper) !important}
-.branch h4{color:var(--flame-hi) !important}
-.fnode.new{background:rgba(67,96,122,.14) !important}
-.slide[data-bg="dark"]::before,.slide[data-bg="mem"]::before{
-  background:radial-gradient(120% 95% at 50% 123%, rgba(188,90,28,.10), transparent 60%),
-    radial-gradient(150% 130% at 50% -15%, rgba(46,35,24,.10), transparent 60%) !important;}
-.slide[data-bg="mem"]::before{
-  background:radial-gradient(120% 95% at 50% 123%, rgba(155,52,18,.14), transparent 58%),
-    radial-gradient(150% 130% at 50% -15%, rgba(46,35,24,.12), transparent 60%) !important;}
-.candle .flame{background:radial-gradient(closest-side at 50% 68%, #FFE1A2, #F3A83C 52%, #C6421E 90%, transparent) !important;
-  box-shadow:0 0 30px 8px rgba(243,140,40,.30),0 0 64px 20px rgba(198,66,30,.12) !important}
-.candle.cheer .flame{background:radial-gradient(closest-side at 50% 60%, #FFF7E6, #FFDE93 46%, #F3A83C 82%, transparent) !important}
-.nav button{background:rgba(245,236,217,.85) !important;color:var(--parchment) !important;border-color:var(--line) !important}
-#count b{color:var(--parchment) !important} #count{color:var(--ash-dim) !important}
-
+#tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:10px 14px;overflow:auto;transform:none!important}
+#tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important}
+#tree-slide.ftfull #ftwrap{height:calc(100vh - 128px)}
 </style>
 <section class="slide no-fit no-nav" id="tree-slide" data-bg="dark" style="--night:#170f09">
   <div class="wrap" style="max-width:1180px">
@@ -1257,6 +1229,7 @@ body{background:var(--night);color:var(--parchment)}
       <button id="ft-back" class="ftbtn">◄ חזרה</button>
       <button id="ft-reset" class="ftbtn">↺ התחלה</button>
       <button id="ft-fit" class="ftbtn">⤢ התאם</button>
+      <button id="ft-full" class="ftbtn">⛶ מסך מלא</button>
       <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
       <button id="ft-zin" class="ftbtn">＋</button>
       <button id="ft-zout" class="ftbtn">－</button>
@@ -1340,6 +1313,9 @@ body{background:var(--night);color:var(--parchment)}
  document.getElementById('ft-reset').addEventListener('click',function(e){e.stopPropagation();hist=[];focal=DEFAULT;showSibs=true;document.getElementById('ft-sibs').textContent='אחים/אחיות: מוצג';render();fitView();});
  document.getElementById('ft-back').addEventListener('click',function(e){e.stopPropagation();if(hist.length)setFocal(hist.pop(),true);});
  document.getElementById('ft-fit').addEventListener('click',function(e){e.stopPropagation();fitView();});
+ function setFull(on){var s=document.getElementById('tree-slide');if(!s)return;s.classList.toggle('ftfull',on);document.getElementById('ft-full').textContent=on?'✕ יציאה':'⛶ מסך מלא';setTimeout(fitView,70);}
+ document.getElementById('ft-full').addEventListener('click',function(e){e.stopPropagation();var s=document.getElementById('tree-slide');setFull(!s.classList.contains('ftfull'));});
+ document.addEventListener('keydown',function(e){if(e.key==='Escape'){var s=document.getElementById('tree-slide');if(s&&s.classList.contains('ftfull')){setFull(false);}}});
  document.getElementById('ft-sibs').addEventListener('click',function(){showSibs=!showSibs;this.textContent='אחים/אחיות: '+(showSibs?'מוצג':'מוסתר');render();});
  document.getElementById('ft-zin').addEventListener('click',function(){view.s=Math.min(2,view.s+.12);applyView();});
  document.getElementById('ft-zout').addEventListener('click',function(){view.s=Math.max(.35,view.s-.12);applyView();});
@@ -1597,6 +1573,71 @@ body{background:var(--night);color:var(--parchment)}
 </section>
 
 </div><!-- /deck -->
+
+<!-- quick-jump navigation menu -->
+<style>
+#jumpbtn{position:fixed;top:14px;left:14px;z-index:120;width:42px;height:42px;border-radius:10px;border:1px solid rgba(212,175,120,.5);background:rgba(30,20,10,.55);color:#e8dcc8;font-size:1.2rem;cursor:pointer}
+#jumpbtn:hover{background:rgba(30,20,10,.85)}
+#jumpmenu{position:fixed;top:62px;left:14px;z-index:120;display:none;flex-direction:column;gap:3px;background:rgba(24,16,8,.97);border:1px solid rgba(212,175,120,.4);border-radius:12px;padding:10px;min-width:220px;box-shadow:0 10px 30px rgba(0,0,0,.5)}
+#jumpmenu.on{display:flex}
+#jumpmenu .jm-title{font-size:.72rem;letter-spacing:.08em;color:#b8a888;text-align:center;margin-bottom:.2rem}
+#jumpmenu button{font:inherit;font-size:.85rem;text-align:start;padding:6px 10px;border-radius:8px;border:1px solid transparent;background:transparent;color:#ece0cc;cursor:pointer;direction:rtl}
+#jumpmenu button:hover{background:rgba(212,175,120,.18);border-color:rgba(212,175,120,.35)}
+
+/* ================= LIGHT AGED-PAPER THEME ================= */
+:root{
+  --night:#E7D3A6; --ink:#DEC898; --ink2:#D4BC8B;
+  --parchment:#332415; --paper:#F1E4C6; --ash:#6A5738; --ash-dim:#8A7247;
+  --flame:#BC5A1C; --flame-hi:#8F5A16; --ember:#9B3412; --slate:#43607A;
+  --line:rgba(46,35,24,.20);
+}
+body{background:var(--night);color:var(--parchment)}
+.clue,.card,.branch,.node,.fnode,.route .city{background:rgba(46,35,24,.05) !important}
+.apt{background:rgba(46,35,24,.04) !important}
+.node.hot,.fnode.hot{background:rgba(188,90,28,.16) !important;border-color:var(--flame) !important;color:var(--parchment) !important}
+.chip{background:rgba(188,90,28,.12) !important;border-color:rgba(188,90,28,.30) !important;color:var(--parchment) !important}
+.chip.ghost{background:transparent !important;border-color:var(--ash-dim) !important;color:var(--ash-dim) !important}
+.apt.fam{background:rgba(188,90,28,.12) !important;border-color:rgba(188,90,28,.42) !important}
+.apt.fam .who{color:var(--flame) !important}
+.callout{background:var(--paper) !important}
+.branch h4{color:var(--flame-hi) !important}
+.fnode.new{background:rgba(67,96,122,.14) !important}
+.slide[data-bg="dark"]::before,.slide[data-bg="mem"]::before{
+  background:radial-gradient(120% 95% at 50% 123%, rgba(188,90,28,.10), transparent 60%),
+    radial-gradient(150% 130% at 50% -15%, rgba(46,35,24,.10), transparent 60%) !important;}
+.slide[data-bg="mem"]::before{
+  background:radial-gradient(120% 95% at 50% 123%, rgba(155,52,18,.14), transparent 58%),
+    radial-gradient(150% 130% at 50% -15%, rgba(46,35,24,.12), transparent 60%) !important;}
+.candle .flame{background:radial-gradient(closest-side at 50% 68%, #FFE1A2, #F3A83C 52%, #C6421E 90%, transparent) !important;
+  box-shadow:0 0 30px 8px rgba(243,140,40,.30),0 0 64px 20px rgba(198,66,30,.12) !important}
+.candle.cheer .flame{background:radial-gradient(closest-side at 50% 60%, #FFF7E6, #FFDE93 46%, #F3A83C 82%, transparent) !important}
+.nav button{background:rgba(245,236,217,.85) !important;color:var(--parchment) !important;border-color:var(--line) !important}
+#count b{color:var(--parchment) !important} #count{color:var(--ash-dim) !important}
+
+</style>
+<button id="jumpbtn" class="no-nav" aria-label="ניווט מהיר" title="ניווט מהיר">☰</button>
+<div id="jumpmenu" class="no-nav">
+  <div class="jm-title">ניווט מהיר</div>
+  <button data-s="1">🕯️ פתיחה</button>
+  <button data-s="5">👧 אילנה · צד אמא</button>
+  <button data-s="22">🌳 עץ אמא · שפירו־גולבר</button>
+  <button data-s="27">👦 קובנה · צד אבא</button>
+  <button data-s="38">🌳 עץ אבא · מרגוליס־ברנר</button>
+  <button data-s="40">🌲 העץ האינטראקטיבי</button>
+  <button data-s="41">💞 המפגש</button>
+  <button data-s="42">👨‍👩‍👧‍👦 הדורות הבאים</button>
+  <button data-s="49">🕯️ אזכרה</button>
+  <button data-s="54">✨ סיום · קריאה לפעולה</button>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('jumpbtn'),m=document.getElementById('jumpmenu');
+  if(!b||!m)return;
+  b.addEventListener('click',function(e){e.stopPropagation();m.classList.toggle('on');});
+  m.addEventListener('click',function(e){e.stopPropagation();var t=e.target.closest('button[data-s]');if(!t)return;location.hash='#slide='+t.getAttribute('data-s');m.classList.remove('on');});
+  document.addEventListener('click',function(e){if(!m.contains(e.target)&&e.target!==b)m.classList.remove('on');});
+})();
+</script>
 
 <div id="bar"><i></i></div>
 <div id="count"><b id="cur">1</b> / <span id="tot">1</span></div>
