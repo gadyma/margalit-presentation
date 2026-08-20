@@ -1267,7 +1267,8 @@ img.ftph{cursor:zoom-in}
 .ftchip.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
 #ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
 #ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
-#ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto}
+#ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
+#ftcanvas .ftmaryr{font-size:.56rem;color:rgba(212,175,120,.95);white-space:nowrap;letter-spacing:.02em}
 #ftcanvas .ftplus{position:absolute;right:-14px;top:50%;transform:translateY(-50%);background:var(--gold,#d4af78);color:#241a0e;font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3}
 #ftcanvas .ftplus:hover{background:#e9c98c}
 #ftcanvas .ftcard{overflow:visible}
@@ -1356,6 +1357,8 @@ img.ftph{cursor:zoom-in}
   ariel:{n:'אריאל יהוד־מרגלית',s:'m'},ana:{n:'אנה',s:'f'},mary:{n:'מרי',s:'f'},lilach:{n:'לילך',s:'f'},nadav:{n:'נדב',s:'m'},shira:{n:'שירה',s:'f'},
   yaar:{n:'יער',b:2023,s:'m',f:'ariel',m:'bar'},nave:{n:'נווה',s:'m',f:'ariel',m:'bar'},avia:{n:'אביה',s:'f',f:'omer',m:'ana'},ellie:{n:'אלי',s:'f',f:'omer',m:'ana'},lucy:{n:'לוסי',s:'f',f:'dror',m:'mary'}
  };
+ var MAR={'jokubas~rosa':'1939'}; // known marriage years, keyed by sorted couple ids
+ function marYear(a,b){return MAR[[a,b].sort().join('~')]||'';}
  var CH={};Object.keys(P).forEach(function(id){var o=P[id];['f','m'].forEach(function(g){if(o[g]&&P[o[g]]){(CH[o[g]]=CH[o[g]]||[]).push(id);}});});
  function kidsOf(id){return CH[id]||[];}
  var PKEYS=Object.keys(P);
@@ -1399,7 +1402,7 @@ img.ftph{cursor:zoom-in}
    var root=document.createElement('div');root.className='ftnode';
    var grp=document.createElement('div');grp.className='ftgen';
    byBirth((showSibs?sibsOf(focal):[]).concat([focal])).forEach(function(id){
-     if(id===focal){var couple=document.createElement('div');couple.className='ftcouple';couple.appendChild(card(focal,true));spousesOf(focal).forEach(function(spid){if(P[spid]){var lk=document.createElement('span');lk.className='ftmar';lk.textContent='⚭';couple.appendChild(lk);couple.appendChild(card(spid));}});grp.appendChild(couple);}
+     if(id===focal){var couple=document.createElement('div');couple.className='ftcouple';couple.appendChild(card(focal,true));spousesOf(focal).forEach(function(spid){if(P[spid]){var lk=document.createElement('span');lk.className='ftmar';var _yr=marYear(focal,spid);lk.innerHTML='⚭'+(_yr?'<span class="ftmaryr">נישאו '+_yr+'</span>':'');if(_yr)lk.title='נישאו '+_yr;couple.appendChild(lk);couple.appendChild(card(spid));}});grp.appendChild(couple);}
      else{var sn=document.createElement('div');sn.className='ftnode';sn.appendChild(card(id));grp.appendChild(sn);}
    });
    root.appendChild(grp);
