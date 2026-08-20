@@ -760,58 +760,74 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
 document.addEventListener('click',function(e){var b=e.target.closest('.xlate-btn');if(!b)return;e.stopPropagation();var p=b.parentElement.querySelector('.xlate-panel');if(p)p.classList.toggle('on');},true);
 </script>
 
-<!-- 14 · the blank branch -->
-<section class="slide" data-bg="dark">
-  <div class="wrap grid g-38">
-    <figure class="center"><div class="blankframe"><div><div class="q">?</div><div class="small" style="margin-top:.6rem">אין שֵׁם · אין פנים</div></div></div></figure>
-    <div class="stack">
-      <div class="eyebrow ember">הענף שנשאר ריק · חידה קטנה</div>
-      <h2>שֵׁם אֶחָד, בְּלִי פָּנִים</h2>
-      <p class="lead">מהסבתא־רבתא של אילנה — <em>אמהּ של סבתהּ לאה</em> — נותר רק שם פרטי אחד, כפי שנרשם במסמך הרוסי:</p>
-      <div class="callout fr" style="text-align:center"><div class="k">כך זה כתוב ברשומה</div><div class="v"><span class="ltr">Baszewa</span> — מה זה בעברית?</div></div>
-      <p class="small fr">התשובה: ככל הנראה שיבוש של <b>בַּת־שֶׁבַע</b> <span class="ltr">(Bat-Sheva)</span>. לא תאריך, לא פנים, לא משפחה —
-        אחת השאלות הפתוחות שעוד נשארו באילן.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 14b · roots funnel (ancestors converge to Ilana) -->
-<section class="slide" data-bg="dark">
+<!-- 14 · roots funnel + the blank branch (merged) -->
+<style>
+.rootslide .roots-intro{max-width:66ch;margin:0 auto .9rem;text-align:center}
+.rootslide .twin{align-items:stretch;gap:clamp(16px,4vw,56px)}
+.rootcol{background:rgba(255,255,255,.045);border:1px solid var(--line);border-radius:16px;padding:12px 12px 16px;position:relative}
+.rootcol .col-head{text-align:center;font-family:var(--serif);font-size:1.05rem;line-height:1.15;margin-bottom:.55rem;color:#9c6f2b}
+.rootcol .col-head .who{display:block;font-size:.78rem;color:var(--ash-dim);font-family:inherit;font-weight:400;margin-top:3px}
+.rootcol .tree{width:100%}
+.rootslide .converge{margin-top:18px}
+.rootslide .converge .node.hot{padding:.55rem 1.1rem;font-size:clamp(.95rem,1.5vw,1.12rem)}
+.blankbranch{max-width:72ch;margin:1rem auto 0;display:flex;gap:15px;align-items:center;justify-content:center;
+  background:rgba(243,169,60,.07);border:1px dashed rgba(243,169,60,.55);border-radius:14px;padding:12px 18px}
+.blankbranch .qmark{flex:0 0 auto;width:50px;height:62px;border:1.5px dashed var(--ash-dim);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:2.1rem;color:var(--ash-dim);opacity:.75}
+.blankbranch .bb-txt{text-align:right;font-size:.94rem;line-height:1.55}
+.blankbranch .bb-txt b{color:var(--flame)}
+.blankbranch .bb-txt .lbl{display:block;font-family:var(--serif);color:#9c6f2b;font-size:.82rem;margin-bottom:2px}
+</style>
+<section class="slide rootslide" data-bg="dark">
   <div class="wrap">
     <div class="eyebrow slate">אִילַן הַשּׁוֹרָשִׁים</div>
     <h2 style="margin-bottom:.3rem">מֵאִילָנָה — טִיפַּסְנוּ אָחוֹרָה בַּזְּמַן</h2>
-    <p class="small" style="max-width:64ch">התחלנו ממנה, מאילנה, וטיפסנו אחורה: שני קווי ההורים — שפירו וגולבר — על כל האחים והאחיות (שמונה מצד יעקב, שלושה מצד רוזה). וילדה אחת, שבה שני הקווים נפגשים. הנשים בשם נעוריהן.</p>
+    <p class="small roots-intro">התחלנו ממנה, מאילנה, וטיפסנו אחורה: שני קווי ההורים — שפירו וגולבר — על כל האחים והאחיות (שמונה מצד יעקב, שלושה מצד רוזה). וילדה אחת, שבה שני הקווים נפגשים. הנשים בשם נעוריהן.</p>
     <div class="fit"><div class="fit-inner"><div class="twin">
-      <div class="tree"><ul><li>
-        <div class="node">יענקל × מינה שפירו</div>
-        <ul><li>
-          <div class="node">הסל × שרה שפירו <span class="mn2">(גרשטיין)</span></div>
-          <ul>
-            <li><div class="node sm">זוסמן</div></li>
-            <li><div class="node sm">דוד</div></li>
-            <li><div class="node sm">זלמן</div></li>
-            <li><div class="node sm">גולדה</div></li>
-            <li><div class="node sm">ליבה</div></li>
-            <li><div class="node sm">משה מישקה</div></li>
-            <li><div class="node sm">יוסקה</div></li>
-            <li><div class="node sm hot">יעקב</div></li>
-          </ul>
-        </li></ul>
-      </li></ul></div>
-      <div class="tree"><ul><li>
-        <div class="node">מרדכי × חנה חיה גולבר <span class="mn2">(קוגוס)</span></div>
-        <ul><li>
-          <div class="node">אברהם × לאה גולבר <span class="mn2">(הלאי)</span></div>
-          <ul>
-            <li><div class="node sm">רבקה</div></li>
-            <li><div class="node sm hot">רוזה</div></li>
-            <li><div class="node sm">וולף</div></li>
-          </ul>
-        </li></ul>
-      </li></ul></div>
+      <div class="rootcol">
+        <div class="col-head">מִצַּד אַבָּא<span class="who">קו שפירו · יעקב</span></div>
+        <div class="tree"><ul><li>
+          <div class="node">יענקל × מינה שפירו</div>
+          <ul><li>
+            <div class="node">הסל × שרה שפירו <span class="mn2">(גרשטיין)</span></div>
+            <ul>
+              <li><div class="node sm">זוסמן</div></li>
+              <li><div class="node sm">דוד</div></li>
+              <li><div class="node sm">זלמן</div></li>
+              <li><div class="node sm">גולדה</div></li>
+              <li><div class="node sm">ליבה</div></li>
+              <li><div class="node sm">משה מישקה</div></li>
+              <li><div class="node sm">יוסקה</div></li>
+              <li><div class="node sm hot">יעקב</div></li>
+            </ul>
+          </li></ul>
+        </li></ul></div>
+      </div>
+      <div class="rootcol">
+        <div class="col-head">מִצַּד אִמָּא<span class="who">קו גולבר · רוזה</span></div>
+        <div class="tree"><ul><li>
+          <div class="node">מרדכי × חנה חיה גולבר <span class="mn2">(קוגוס)</span></div>
+          <ul><li>
+            <div class="node">אברהם × לאה גולבר <span class="mn2">(הלאי)</span></div>
+            <ul>
+              <li><div class="node sm">רבקה</div></li>
+              <li><div class="node sm hot">רוזה</div></li>
+              <li><div class="node sm">וולף</div></li>
+            </ul>
+          </li></ul>
+        </li></ul></div>
+      </div>
     </div></div></div>
     <div class="converge"><div class="node hot">שני המסומנים נישאו — יעקב (מימין) ורוזה (משמאל) — ובתם: אילנה הֶסטה</div></div>
-    <p class="tiny" style="text-align:center;margin-top:.5rem;color:var(--ash-dim)">הורי שרה: לייבה גרשטיין × פרלה — הקו הזה נמשך אחורה עד ~1628 (ראו ציר הזמן) &nbsp;·&nbsp; הורי לאה: אליעזר הלאי × בת־שבע(?)</p>
+    <div class="blankbranch fr">
+      <div class="qmark">?</div>
+      <div class="bb-txt">
+        <span class="lbl">הענף שנשאר ריק</span>
+        מֵאִמָּהּ של לאה (הלאי) — הסבתא־רבתא של אילנה — נותר במסמך הרוסי רק שם פרטי אחד:
+        <span class="ltr">Baszewa</span>, קרוב לוודאי שיבוש של <b>בַּת־שֶׁבַע</b>. בלי תאריך, בלי פנים, בלי משפחה — אחת השאלות הפתוחות שעוד נשארו באילן.
+      </div>
+    </div>
+    <p class="tiny" style="text-align:center;margin-top:.55rem;color:var(--ash-dim)">הורי שרה: לייבה גרשטיין × פרלה — הקו הזה נמשך אחורה עד ~1628 (ראו ציר הזמן)</p>
   </div>
 </section>
 
