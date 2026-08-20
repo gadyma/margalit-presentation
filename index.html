@@ -1208,11 +1208,11 @@ img.ftph{cursor:zoom-in}
 .ftname{font-weight:700;font-size:.72rem;line-height:1.15;text-align:center}
 .ftdate{font-size:.62rem;opacity:.72;direction:ltr}
 .ftbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:.2rem 0 .55rem}
-.ftbtn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:20px;border:1px solid rgba(212,175,120,.4);background:rgba(212,175,120,.1);color:#e8dcc8;cursor:pointer}
-.ftbtn:hover{background:rgba(212,175,120,.22)}
-.fthint{font-size:.7rem;opacity:.6;max-width:300px}
+.ftbtn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:20px;border:1px solid #9a7636;background:#c9a25e;color:#2a1e08;cursor:pointer;font-weight:600}
+.ftbtn:hover{background:#d8b877}
+.fthint{font-size:.7rem;color:#6b5029;max-width:300px}
 .ftkids,.ftsibs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-top:.4rem;min-height:1.5rem}
-.ftlab{font-size:.74rem;opacity:.72}
+.ftlab{font-size:.74rem;color:#6b5029}
 .ftchip{font:inherit;font-size:.72rem;padding:3px 10px;border-radius:14px;border:1px solid;cursor:pointer;background:#182634;border-color:#3a586f;color:#eaf1f6}
 .ftchip.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
 #ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
@@ -1221,7 +1221,9 @@ img.ftph{cursor:zoom-in}
 #ftcanvas .ftplus{position:absolute;right:-14px;top:50%;transform:translateY(-50%);background:var(--gold,#d4af78);color:#241a0e;font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3}
 #ftcanvas .ftplus:hover{background:#e9c98c}
 #ftcanvas .ftcard{overflow:visible}
-#ftinfo{max-width:640px;margin:.4rem auto 0;background:rgba(212,175,120,.1);border:1px solid rgba(212,175,120,.32);border-radius:12px;padding:9px 15px;font-size:.86rem;line-height:1.6;color:var(--ash,#e8dcc8);text-align:center;direction:rtl}
+#ftinfo{max-width:640px;margin:.4rem auto 0;background:rgba(45,32,16,.92);border:1px solid rgba(212,175,120,.5);border-radius:12px;padding:9px 15px;font-size:.86rem;line-height:1.6;color:#efe3cf;text-align:center;direction:rtl}
+#ftpath{color:#6b5029!important}
+#tree-slide.ftfull #ftpath,#tree-slide.ftfull .ftlab,#tree-slide.ftfull .fthint{color:#d8c39a!important}
 /* vertical orientation (ancestors upward) */
 #ftcanvas.vert .ftnode{flex-direction:column-reverse;align-items:center}
 #ftcanvas.vert .ftanc{flex-direction:row;justify-content:center;gap:16px;padding-bottom:22px}
@@ -1230,7 +1232,7 @@ img.ftph{cursor:zoom-in}
 #ftcanvas.vert .ftanc>.ftnode{margin-left:0}
 #ftcanvas.vert .ftanc>.ftnode::before{left:50%;top:100%;bottom:auto;width:2px;height:11px;background:rgba(212,175,120,.45)}
 #ftcanvas.vert .ftgen{flex-direction:row;align-items:flex-end;gap:10px}
-#ftcanvas.vert .ftplus{right:auto;left:50%;top:auto;bottom:-14px;transform:translateX(-50%)}
+#ftcanvas.vert .ftplus{right:auto;left:50%;bottom:auto;top:-13px;transform:translateX(-50%)}
 #tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:10px 14px;overflow:auto;transform:none!important}
 #tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important}
 #tree-slide.ftfull #ftwrap{height:calc(100vh - 128px)}
@@ -1244,13 +1246,13 @@ img.ftph{cursor:zoom-in}
       <button id="ft-reset" class="ftbtn">↺ התחלה</button>
       <button id="ft-fit" class="ftbtn">⤢ התאם</button>
       <button id="ft-full" class="ftbtn">⛶ מסך מלא</button>
-      <button id="ft-rot" class="ftbtn">⟲ אנכי</button>
+      <button id="ft-rot" class="ftbtn">⟲ אופקי</button>
       <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
       <button id="ft-zin" class="ftbtn">＋</button>
       <button id="ft-zout" class="ftbtn">－</button>
       <span class="fthint">לחצו על אדם למקם אותו במרכז · על תמונה להגדלה · גררו והשתמשו בגלגלת להזזה וזום · חצים במקלדת מדפדפים בין השקפים</span>
     </div>
-    <div id="ftwrap"><div id="ftcanvas"></div></div>
+    <div id="ftwrap"><div id="ftcanvas" class="vert"></div></div>
     <div id="ftkids" class="ftkids"></div>
     <div id="ftsibs" class="ftsibs"></div>
     <p id="ftpath" class="tiny" style="text-align:center;color:var(--ash-dim);margin-top:.3rem"></p>
