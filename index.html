@@ -1217,6 +1217,9 @@ img.ftph{cursor:zoom-in}
 #ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
 #ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
 #ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto}
+#ftcanvas .ftplus{position:absolute;right:-14px;top:50%;transform:translateY(-50%);background:var(--gold,#d4af78);color:#241a0e;font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3}
+#ftcanvas .ftplus:hover{background:#e9c98c}
+#ftcanvas .ftcard{overflow:visible}
 #tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:10px 14px;overflow:auto;transform:none!important}
 #tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important}
 #tree-slide.ftfull #ftwrap{height:calc(100vh - 128px)}
@@ -1284,12 +1287,13 @@ img.ftph{cursor:zoom-in}
  var PKEYS=Object.keys(P);
  function bnum(id){var b=P[id].b;if(typeof b==='number')return b;if(typeof b==='string'){var m=b.match(/\d{3,4}/);if(m)return+m[0];}return 9999;}
  function byBirth(ids){return ids.slice().sort(function(a,b){return (bnum(a)-bnum(b))||(PKEYS.indexOf(a)-PKEYS.indexOf(b));});}
- var DEFAULT='gady',focal=DEFAULT,showSibs=true,view={x:14,y:14,s:.6};
+ var DEFAULT='gady',focal=DEFAULT,showSibs=true,MAXGEN=3,view={x:14,y:14,s:.6};
+ function ancCount(id){var o=P[id],c=0;['f','m'].forEach(function(g){var pid=o[g];if(pid&&P[pid])c+=1+ancCount(pid);});return c;}
  var wrap=document.getElementById('ftwrap'),canvas=document.getElementById('ftcanvas');
  if(!wrap||!canvas)return;
  function dstr(o){var a=o.b!=null?(''+o.b):'',b=o.d!=null?(''+o.d):'';if(a&&b)return a+'–'+b;if(b)return'נפ׳ '+b;return a;}
  function card(id,isF){var o=P[id],d=document.createElement('div');d.className='ftcard '+(o.s==='f'?'f':'m')+(isF?' focal':'');var ph;if(o.p){ph=document.createElement('img');ph.className='ftph';ph.src=o.p;ph.alt=o.n;ph.addEventListener('click',function(e){e.stopPropagation();var lb=document.getElementById('lb');if(!lb)return;lb.querySelector('img').src=o.p;var c=lb.querySelector('.lbcap');if(c)c.textContent=o.n+(dstr(o)?' · '+dstr(o):'');lb.classList.remove('hastog');lb.classList.add('on');});}else{ph=document.createElement('div');ph.className='ftph ftsil';}d.appendChild(ph);var nm=document.createElement('div');nm.className='ftname';nm.textContent=o.n;d.appendChild(nm);var ds=dstr(o);if(ds){var dd=document.createElement('div');dd.className='ftdate';dd.textContent=ds;d.appendChild(dd);}d.addEventListener('click',function(e){e.stopPropagation();setFocal(id);});return d;}
- function node(id,depth){var n=document.createElement('div');n.className='ftnode';n.appendChild(card(id,depth===0));var o=P[id];if(depth<4&&((o.f&&P[o.f])||(o.m&&P[o.m]))){var a=document.createElement('div');a.className='ftanc';if(o.f&&P[o.f])a.appendChild(node(o.f,depth+1));if(o.m&&P[o.m])a.appendChild(node(o.m,depth+1));n.appendChild(a);}return n;}
+ function node(id,depth){var n=document.createElement('div');n.className='ftnode';var c=card(id,depth===0);var o=P[id];var hasP=(o.f&&P[o.f])||(o.m&&P[o.m]);if(depth>=MAXGEN&&hasP){var pl=document.createElement('span');pl.className='ftplus';var cc=ancCount(id);pl.textContent='+'+cc;pl.title='עוד '+cc+' אבות למעלה — לחצו להרחבה';pl.addEventListener('click',function(e){e.stopPropagation();setFocal(id);});c.appendChild(pl);}n.appendChild(c);if(depth<MAXGEN&&hasP){var a=document.createElement('div');a.className='ftanc';if(o.f&&P[o.f])a.appendChild(node(o.f,depth+1));if(o.m&&P[o.m])a.appendChild(node(o.m,depth+1));n.appendChild(a);}return n;}
  function sibsOf(id){var o=P[id],set={};['f','m'].forEach(function(g){var pid=o[g];if(pid&&CH[pid])CH[pid].forEach(function(k){if(k!==id)set[k]=1;});});return Object.keys(set);}
  function spousesOf(id){var set={};(CH[id]||[]).forEach(function(kid){var k=P[kid];[k.f,k.m].forEach(function(pid){if(pid&&pid!==id&&P[pid])set[pid]=1;});});return Object.keys(set);}
  function chip(id){var o=P[id],c=document.createElement('button');c.className='ftchip '+(o.s==='f'?'f':'m');c.textContent=o.n;c.addEventListener('click',function(e){e.stopPropagation();setFocal(id);});return c;}
