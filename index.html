@@ -1591,6 +1591,10 @@ img.ftph{cursor:zoom-in}
 #jumpmenu .jm-title{font-size:.72rem;letter-spacing:.08em;color:#b8a888;text-align:center;margin-bottom:.2rem}
 #jumpmenu button{font:inherit;font-size:.85rem;text-align:start;padding:6px 10px;border-radius:8px;border:1px solid transparent;background:transparent;color:#ece0cc;cursor:pointer;direction:rtl}
 #jumpmenu button:hover{background:rgba(212,175,120,.18);border-color:rgba(212,175,120,.35)}
+#jm-search{font:inherit;font-size:.85rem;padding:6px 10px;border-radius:8px;border:1px solid rgba(212,175,120,.45);background:rgba(0,0,0,.28);color:#ece0cc;margin-bottom:.35rem;direction:rtl;width:100%;box-sizing:border-box}
+#jm-results{display:none;flex-direction:column;gap:2px;max-height:52vh;overflow:auto}
+#jm-results .jm-none{font-size:.78rem;color:#b8a888;padding:6px 10px}
+#jm-results button .jm-n{color:#c9b485;font-size:.72rem;margin-inline-start:6px}
 
 /* ================= LIGHT AGED-PAPER THEME ================= */
 :root{
@@ -1623,26 +1627,36 @@ body{background:var(--night);color:var(--parchment)}
 #count b{color:var(--parchment) !important} #count{color:var(--ash-dim) !important}
 
 </style>
-<button id="jumpbtn" class="no-nav" aria-label="ניווט מהיר" title="ניווט מהיר">☰</button>
+<button id="jumpbtn" class="no-nav" aria-label="ניווט וחיפוש" title="ניווט וחיפוש">☰</button>
 <div id="jumpmenu" class="no-nav">
-  <div class="jm-title">ניווט מהיר</div>
-  <button data-s="1">🕯️ פתיחה</button>
-  <button data-s="5">👧 אילנה · צד אמא</button>
-  <button data-s="22">🌳 עץ אמא · שפירו־גולבר</button>
-  <button data-s="27">👦 קובנה · צד אבא</button>
-  <button data-s="38">🌳 עץ אבא · מרגוליס־ברנר</button>
-  <button data-s="40">🌲 העץ האינטראקטיבי</button>
-  <button data-s="41">💞 המפגש</button>
-  <button data-s="42">👨‍👩‍👧‍👦 הדורות הבאים</button>
-  <button data-s="49">🕯️ אזכרה</button>
-  <button data-s="54">✨ סיום · קריאה לפעולה</button>
+  <div class="jm-title">ניווט וחיפוש</div>
+  <input id="jm-search" class="no-nav" type="search" placeholder="🔎 חיפוש בשקפים…" autocomplete="off">
+  <div id="jm-results" class="no-nav"></div>
+  <div id="jm-static">
+    <button data-s="1">🕯️ פתיחה</button>
+    <button data-s="5">👧 אילנה · צד אמא</button>
+    <button data-s="22">🌳 עץ אמא · שפירו־גולבר</button>
+    <button data-s="27">👦 קובנה · צד אבא</button>
+    <button data-s="38">🌳 עץ אבא · מרגוליס־ברנר</button>
+    <button data-s="40">🌲 העץ האינטראקטיבי</button>
+    <button data-s="41">💞 המפגש</button>
+    <button data-s="42">👨‍👩‍👧‍👦 הדורות הבאים</button>
+    <button data-s="49">🕯️ אזכרה</button>
+    <button data-s="54">✨ סיום · קריאה לפעולה</button>
+  </div>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('jumpbtn'),m=document.getElementById('jumpmenu');
+  var b=document.getElementById('jumpbtn'),m=document.getElementById('jumpmenu'),srch=document.getElementById('jm-search'),res=document.getElementById('jm-results'),stat=document.getElementById('jm-static');
   if(!b||!m)return;
-  b.addEventListener('click',function(e){e.stopPropagation();m.classList.toggle('on');});
-  m.addEventListener('click',function(e){e.stopPropagation();var t=e.target.closest('button[data-s]');if(!t)return;location.hash='#slide='+t.getAttribute('data-s');m.classList.remove('on');});
+  var slides=document.querySelectorAll('.slide'),idx=[];
+  for(var k=0;k<slides.length;k++){var s=slides[k],h=s.querySelector('h1,h2'),eb=s.querySelector('.eyebrow');var ti=(h?h.textContent:(eb?eb.textContent:'שקף '+(k+1)));idx.push({n:k+1,title:ti.replace(/\s+/g,' ').trim()||('שקף '+(k+1)),text:(s.textContent||'').toLowerCase()});}
+  function go(n){location.hash='#slide='+n;m.classList.remove('on');srch.value='';doSearch();}
+  function doSearch(){var q=srch.value.trim().toLowerCase();res.innerHTML='';if(!q){stat.style.display='';res.style.display='none';return;}stat.style.display='none';res.style.display='flex';var hits=idx.filter(function(o){return o.text.indexOf(q)>=0;});if(!hits.length){var d=document.createElement('div');d.className='jm-none';d.textContent='אין תוצאות';res.appendChild(d);return;}hits.slice(0,25).forEach(function(o){var bt=document.createElement('button');bt.setAttribute('data-s',o.n);bt.innerHTML='<span class="jm-n">'+o.n+'</span> '+o.title;res.appendChild(bt);});}
+  b.addEventListener('click',function(e){e.stopPropagation();m.classList.toggle('on');if(m.classList.contains('on'))setTimeout(function(){srch.focus();},60);});
+  m.addEventListener('click',function(e){e.stopPropagation();var t=e.target.closest('button[data-s]');if(t)go(t.getAttribute('data-s'));});
+  srch.addEventListener('input',doSearch);
+  srch.addEventListener('keydown',function(e){e.stopPropagation();if(e.key==='Enter'){var f=res.querySelector('button[data-s]');if(f)go(f.getAttribute('data-s'));}else if(e.key==='Escape'){m.classList.remove('on');}});
   document.addEventListener('click',function(e){if(!m.contains(e.target)&&e.target!==b)m.classList.remove('on');});
 })();
 </script>
