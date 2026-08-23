@@ -33,11 +33,13 @@
 
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
+html{overflow-x:hidden}
 body{
   background:var(--night);
   color:var(--parchment);
   font-family:var(--sans);
   overflow:hidden;
+  overflow-wrap:break-word;
   -webkit-font-smoothing:antialiased;
   text-rendering:optimizeLegibility;
 }
@@ -384,10 +386,25 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
 /* responsive */
 @media (max-width:820px){
   .g-2,.g-38,.g-62{grid-template-columns:1fr}
-  .slide{padding:24px 20px;justify-content:flex-start;padding-top:64px;overflow-y:auto}
+  .slide{padding:24px 20px;justify-content:flex-start;padding-top:64px;overflow-y:auto;overflow-x:hidden}
+  /* mobile is pure flex + scroll — neutralise the JS fit-scale so nothing is
+     shrunk or centred with a big empty gap (JS also guards, this is the belt) */
+  .slide>.wrap{transform:none!important}
+  .grid,.stack,.wrap{min-width:0}
+  .grid>*,.stack>*,.twin>*{min-width:0;max-width:100%}
+  .lead,.small,.tiny,p,h1,h2,h3,.node,.chip,.fnode,.branch,.card{overflow-wrap:break-word}
+  /* long summary "nodes" must wrap instead of forcing a >viewport nowrap line */
+  .converge .node,.node.big,.node.surv.big{white-space:normal}
+  img,video,iframe{max-width:100%}
   .lead{max-width:none}
   .tl .who{display:none}
-  #hint{display:none}
+  #hint{display:none!important}
+}
+/* very small phones: trim heading minimums so long headings wrap gracefully */
+@media (max-width:400px){
+  h1{font-size:clamp(2.35rem,8.6vw,2.9rem)}
+  h2{font-size:clamp(1.95rem,7.2vw,2.35rem)}
+  .cover h1{font-size:clamp(2.45rem,10.4vw,3.4rem)}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none!important;transition:opacity .2s ease!important}
@@ -2230,6 +2247,9 @@ body{background:var(--night);color:var(--parchment)}
   /* scale a whole slide's content to fit its box — largest readable size that fits, any display */
   function fitWrap(s){
     if(!s) return;
+    /* on phones/tablets the slide scrolls: never scale the wrap (would shrink
+       text and, with center origin, push content down leaving a big top gap) */
+    if(window.innerWidth<=820){ var wm=s.querySelector('.wrap'); if(wm) wm.style.transform='none'; return; }
     if(s.classList.contains('no-fit')){ var wn=s.querySelector('.wrap'); if(wn) wn.style.transform='none'; return; }
     var w=s.querySelector('.wrap'); if(!w) return;
     w.style.transformOrigin='center center';
