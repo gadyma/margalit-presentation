@@ -1869,6 +1869,54 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
   </div>
 </section>
 
+<!-- archive-discoveries slide (Gady request, empty->filled concept) -->
+<section class="slide" id="arch-slide" data-bg="dark">
+  <style>
+    #arch-slide .arch-legend{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:.25rem auto .7rem}
+    #arch-slide .abadge{border:1px solid rgba(176,122,30,.5);color:var(--ash);border-radius:14px;padding:2px 10px;font-size:clamp(.64rem,1.5vw,.78rem);white-space:nowrap}
+    #arch-slide .arch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,268px),1fr));gap:14px;width:100%}
+    #arch-slide .disc{border:1px solid rgba(176,122,30,.32);border-radius:12px;padding:.65rem .8rem;background:rgba(255,249,238,.4)}
+    #arch-slide .disc h4{margin:0 0 .35rem;color:#b0761e;font-size:clamp(.95rem,2.3vw,1.08rem)}
+    #arch-slide .found{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin:.3rem 0;font-size:clamp(.79rem,1.9vw,.93rem);line-height:1.35}
+    #arch-slide .found .q{align-self:center;flex:0 0 auto;width:16px;height:16px;border-radius:50%;border:1px dashed #c1ab86;color:#b09a76;display:inline-flex;align-items:center;justify-content:center;font-size:.66rem}
+    #arch-slide .found b{color:#a9651e}
+    #arch-slide .found .src{color:var(--ash-dim);font-size:.86em}
+    #arch-slide .found .badge{color:var(--ash-dim);font-size:.82em;white-space:nowrap}
+  </style>
+  <div class="wrap stack" style="max-width:1160px">
+    <div class="eyebrow" style="justify-content:center"><span class="spark"></span>&nbsp;מֶחְקָר בָּאַרְכִיּוֹנִים</div>
+    <h2 style="text-align:center;margin-bottom:.05rem">מֵהָאַרְכִיּוֹן אֶל הָעֵץ</h2>
+    <p class="small" style="text-align:center;color:var(--ash);margin:.05rem auto .3rem">כָּל עָנָף שֶׁהָיָה רֵיק — מִסְמָךְ אֶחָד מִלֵּא אוֹתוֹ. <span class="q" style="border:1px dashed #c1ab86;border-radius:50%;padding:0 5px;color:#b09a76">?</span> ◂ <b style="color:#a9651e">שֵׁם</b> · 📜 אַרְכִיוֹן.</p>
+    <div class="arch-legend">
+      <span class="abadge">📜 LVIA · וילנה</span><span class="abadge">📜 LVVA · ריגה</span><span class="abadge">📜 KRA · קובנה</span><span class="abadge">📜 JewishGen · LitvakSIG</span><span class="abadge">📜 יד ושם</span><span class="abadge">🧬 DNA</span><span class="abadge">🌳 Geni</span>
+    </div>
+    <div class="arch-grid">
+      <div class="disc"><h4>🕯️ שְׁנֵי הַיְתוֹמִים — תְּעוּדוֹת הַלֵּדָה שֶׁלָּהֶם</h4>
+        <div class="found"><span class="q">?</span> <b>יוסף מרגלית</b> · תעודת לידה №553 (11.3.1937) <span class="badge">— 📜 LVIA F.1817</span></div>
+        <div class="found"><span class="q">?</span> <b>אילנה שפירא</b> · רישום לידה №497 (1940) <span class="badge">— 📜 LVIA וילנה</span></div>
+        <div class="found"><span class="src">התאריך שאילנה נאלצה לנחש — נמצא במסמך.</span></div>
+      </div>
+      <div class="disc"><h4>👨 צַד אַבָּא — מֵ«רֵיק» לִמְתֹעָד</h4>
+        <div class="found"><span class="q">?</span> <b>יעקב × חנה</b> נישואים 1931 · אבל × חיה 1902 <span class="badge">— 📜 LVIA קובנה</span></div>
+        <div class="found"><span class="q">?</span> <b>טוביאנסקי</b> עד סֶרֶדžיאי — 4 דורות <span class="badge">— 📜 LVIA</span></div>
+        <div class="found"><span class="q">?</span> <b>ענף מקסיקו</b> (בנימין ברנר) <span class="badge">— 🧬 DNA</span></div>
+        <div class="found"><span class="q">?</span> <b>7 נספים</b> עם «דף עד» <span class="badge">— 📜 יד ושם</span></div>
+      </div>
+      <div class="disc"><h4>🌳 צַד אִמָּא — עֹמֶק וּפָנִים</h4>
+        <div class="found"><span class="q">?</span> <b>עד קופל גרשטיין ~1700</b> · 11 דורות <span class="badge">— 📜 רוויזיית 1813 · מנדלברוד מאומת</span></div>
+        <div class="found"><span class="q">?</span> <b>הורי שרה</b>: לייבה שמואל × פרלה יוכלסון <span class="badge">— 🌳 Geni/ארכיון</span></div>
+        <div class="found"><span class="q">?</span> <b>תמונת החתונה 1939</b> — ~30 פנים זוהו</div>
+        <div class="found"><span class="q">?</span> <b>ענף טמפלמן</b> <span class="badge">— 🧬 DNA</span></div>
+      </div>
+      <div class="disc"><h4>💙 בְּלוּמֶנָאוּ — עָנָף חָדָשׁ לְגַמְרֵי (צַד נֶחִי)</h4>
+        <div class="found"><span class="q">?</span> <b>לוין → צודק → מוזס → בנימין</b> <span class="badge">— 📜 קולדיגה/ריגה 1882</span></div>
+        <div class="found"><span class="q">?</span> <b>לינה בלומנאו</b> (b.1886) — «?» שהתמלא החודש <span class="badge">— 📜 LVVA</span></div>
+        <div class="found"><span class="q">?</span> <b>אידה</b> — גירוש לסיביר 1941 (תיק 16050) <span class="badge">— 📜 מסד הגירושים + זיכרונות</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- 22b · the DNA reunion (documented + lore) -->
 <section class="slide" data-bg="dark">
   <div class="wrap grid g-62">
@@ -2115,8 +2163,9 @@ body{background:var(--night);color:var(--parchment)}
     <button data-s="40">💞 המפגש</button>
     <button data-s="41">👨‍👩‍👧‍👦 הדורות הבאים</button>
     <button data-s="42">🖼️ ארבע המשפחות</button>
-    <button data-s="46">🕯️ אזכרה</button>
-    <button data-s="50">✨ סיום · קריאה לפעולה</button>
+    <button data-s="43">📜 מהארכיון אל העץ</button>
+    <button data-s="47">🕯️ אזכרה</button>
+    <button data-s="51">✨ סיום · קריאה לפעולה</button>
   </div>
 </div>
 <script>
