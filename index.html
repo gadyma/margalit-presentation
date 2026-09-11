@@ -525,7 +525,26 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
     }
     card.hidden=!html; card.innerHTML=html;
     try{ localStorage.setItem('deck_whoami',JSON.stringify(st)); }catch(e){}
+    if(window.__applyWho) window.__applyWho();
   }
+  /* personalize every "עד אלינו" relation-chain in the deck: the chain now ends with YOU */
+  window.__applyWho=function(){
+    var s=null; try{ s=JSON.parse(localStorage.getItem('deck_whoami')); }catch(e){}
+    var fams={'ינקי':1,'עודד':1,'דני':1,'גדי':1};
+    [].forEach.call(document.querySelectorAll('.relchain'),function(ch){
+      var us=ch.querySelector('.rc-node.us'); if(!us) return;
+      if(!us.getAttribute('data-orig')) us.setAttribute('data-orig',us.textContent);
+      [].forEach.call(ch.querySelectorAll('.who-ext'),function(x){x.parentNode.removeChild(x);});
+      if(!(s&&s.fam&&fams[s.fam]&&s.gen)){ us.textContent=us.getAttribute('data-orig'); return; }
+      if(s.gen===9){ us.textContent=s.fam+' · אַתֶּם'; return; }
+      us.textContent=s.fam;
+      var rel=document.createElement('span'); rel.className='rc-rel who-ext';
+      rel.textContent=(s.gen===10)?'ילדיו':'נכדיו';
+      var you=document.createElement('span'); you.className='rc-node us who-ext'; you.textContent='אַתֶּם';
+      ch.appendChild(rel); ch.appendChild(you);
+    });
+  };
+  document.addEventListener('DOMContentLoaded',function(){ window.__applyWho(); });
   famRow.addEventListener('click',function(e){
     var b=e.target.closest('button[data-fam]'); if(!b) return;
     e.stopPropagation(); st.fam=b.getAttribute('data-fam');
@@ -736,7 +755,7 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
       <div class="eyebrow ember">עדות משפחתית · וילנה, קיץ 1944</div>
       <h2 style="margin-bottom:.25rem">הַחַלּוֹן בַּקּוֹמָה הַחֲמִישִׁית</h2>
       <p class="lead wide">מלשין הסגיר את מקום המחבוא של <b>שרה</b> ושל נכדותֶיהָ. מה שאירע אז ליד החלון בקומה החמישית — המשפחה נושאת עמה בשתיקה. כארבעה חודשים בלבד לפני שחרור וילנה.</p>
-      <p class="small fr">עם שרה נספו נכדותֶיהָ <b>נינה וגֶסְיָה</b> — בנותיה של <em>גולדה קפלינסקי</em>, בתהּ של שרה ואחותם של חמשת האחים.</p>
+      <p class="small fr">עם שרה נרצחו נכדותֶיהָ <b>נינה וגֶסְיָה</b> — בנותיה של <em>גולדה קפלינסקי</em>, בתהּ של שרה ואחותם של חמשת האחים.</p>
       <p class="small fr" style="color:var(--ash-dim)">זו עדות משפחתית — אין לה תיעוד ארכיוני. אבל הזיכרון נשמר, וכאן הוא נאמר בקול.</p>
     </div>
   </div>
@@ -1525,7 +1544,7 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
     <p class="small fr">בְּיודעם שאלפים מסתתרים בבונקרים («מָלִינוֹת»), הִצִּיתו הגרמנים את הגטו.
       השרפות בערו כשבוע. <em>הצבא האדום שחרר את קובנה ב־<span class="ltr">1 באוגוסט 1944</span></em> — שבועות ספורים בלבד אחר־כך.</p>
     <div class="callout fr"><div class="k">לפני כן · אַקְצְיַת הילדים, <span class="ltr">27–28.3.1944</span></div><div class="v">ילדים וזקנים נחטפו — ולכן הבריחו את הקטנים (יוסי, אריה, מאשה ואדיק) אל מחוץ לגדר עוד קודם לכן.</div></div>
-    <div class="callout fr" style="margin-top:.5rem"><div class="k">בְּאוֹתָם יָמִים — הַמִּשְׁפָּחָה בַּגֶּטוֹ</div><div class="v">חנה מרגוליס נרצחה (יולי 1944); ושמואל («מוּלֶה») נספה בבונקר, בין 8–12 ביולי.</div></div>
+    <div class="callout fr" style="margin-top:.5rem"><div class="k">בְּאוֹתָם יָמִים — הַמִּשְׁפָּחָה בַּגֶּטוֹ</div><div class="v">חנה מרגוליס נרצחה (יולי 1944); ושמואל («מוּלֶה») נרצח בבונקר, בין 8–12 ביולי.</div></div>
     <p class="tiny fr" style="color:var(--ash);margin-top:.5rem">מקורות: <span class="ltr">USHMM «The Holocaust in Kovno» · Yad Vashem «Kovno Ghetto»</span></p>
   </div>
 </section>
