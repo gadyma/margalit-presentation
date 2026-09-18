@@ -2207,14 +2207,19 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
 html,body{height:100%}
 body{margin:0;direction:rtl;overflow:hidden;background:radial-gradient(1200px 700px at 50% -10%,#fbf3df,var(--bg) 55%,var(--bg2));
   color:var(--ink);font-family:'Assistant','Segoe UI',Arial,sans-serif}
-.wrap{height:100%;max-width:1260px;margin:0 auto;padding:5px 12px 6px;display:flex;flex-direction:column;min-height:0}
+.wrap{height:100%;max-width:min(1500px,97vw);margin:0 auto;padding:5px 12px 6px;display:flex;flex-direction:column;min-height:0}
 .stagewrap{flex:1 1 auto;min-height:0;display:flex;align-items:center;justify-content:center}
 .btns{flex:none;text-align:center;margin:2px 0 6px}
 .btn{background:var(--gold);color:#fff;border:0;border-radius:999px;padding:9px 20px;font-size:14px;font-weight:700;
   cursor:pointer;font-family:inherit;box-shadow:0 3px 10px rgba(0,0,0,.14);margin:0 4px}
 .btn.sec{background:#7c6a44}
 .btn:hover{filter:brightness(1.07)}
-.stage{position:relative;height:100%;width:auto;max-width:100%;aspect-ratio:16/9;margin:0 auto;border-radius:12px;overflow:visible;
+/* Gady, 18 Sep: &quot;when doing full screen the pictures scale changes&quot;. It was height-driven
+   (height:100%, width from aspect-ratio) with a max-width cap. Fullscreen made the box taller
+   than 1260px*9/16, so max-width bound, height:100% kept the full height, and the aspect ratio
+   silently broke -- every card is positioned in % of the stage, so they all moved and resized.
+   Drive it from WIDTH instead, bounded by the available height, and the ratio can never break. */
+.stage{position:relative;height:auto;width:min(97%, calc(74vh * 16 / 9));max-width:none;aspect-ratio:16/9;margin:0 auto;border-radius:12px;overflow:visible;
   box-shadow:0 8px 30px rgba(0,0,0,.18);background:radial-gradient(900px 520px at 50% 12%,#f7edd5,#eadfc0 70%,#e2d4b0)}
 .pht{position:absolute;object-fit:fill;border-radius:8px;box-shadow:0 3px 12px rgba(0,0,0,.25);
   z-index:2;opacity:1;transition:opacity 1.2s ease}
