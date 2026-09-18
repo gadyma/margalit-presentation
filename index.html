@@ -751,6 +751,111 @@ figure.center{display:flex;flex-direction:column;align-items:center;gap:.4rem}
   </div>
 </section>
 
+<!-- 18d · interactive family-tree explorer -->
+<style>
+#ftwrap{position:relative;height:min(60vh,520px);overflow:hidden;border:1px solid rgba(212,175,120,.28);border-radius:12px;background:rgba(18,12,8,.55);cursor:grab;touch-action:none;direction:ltr}
+#ftcanvas{position:absolute;top:0;left:0;transform-origin:top left;will-change:transform;padding:12px}
+#ftcanvas .ftnode{display:flex;align-items:center}
+#ftcanvas .ftanc{position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px}
+#ftcanvas .ftanc::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:2px;background:rgba(212,175,120,.45)}
+#ftcanvas .ftanc>.ftnode{margin-left:30px;position:relative}
+#ftcanvas .ftanc>.ftnode::before{content:'';position:absolute;left:-30px;top:50%;width:30px;height:2px;background:rgba(212,175,120,.45)}
+.ftcard{direction:rtl;width:130px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 8px;margin:4px 0;border-radius:10px;cursor:pointer;border:1px solid;position:relative;z-index:1;transition:transform .12s,box-shadow .12s}
+.ftcard:hover{transform:translateY(-2px)}
+.ftcard.m{background:#182634;border-color:#3a586f;color:#eaf1f6}
+.ftcard.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
+.ftcard.focal{box-shadow:0 0 0 2px #d4af78,0 6px 18px rgba(0,0,0,.45)}
+.ftph{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,120,.7);background:#3a3a3a}
+img.ftph{cursor:zoom-in}
+.ftsil{background:#4a4a4a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23a0a0a0' d='M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E") center/70% no-repeat}
+.ftname{font-weight:700;font-size:.72rem;line-height:1.15;text-align:center}
+.ftdate{font-size:.62rem;opacity:.72;direction:ltr}
+/* sibling band on the merged ancestry slide (#anc-slide) — compact chips so the
+   siblings from the old text tree fit without another full-height tree. */
+#anc-slide .sibsband{max-width:1000px;margin:.55rem auto 0;display:flex;flex-direction:column;gap:.3rem}
+#anc-slide .sibrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
+#anc-slide .sibrow .sl{font-size:.72rem;color:var(--slate);font-family:var(--serif);margin-inline-end:4px;white-space:nowrap}
+#anc-slide .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:100px;
+  padding:.2rem .6rem;font-size:.82rem;background:rgba(255,255,255,.04);white-space:nowrap}
+#anc-slide .chip img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,120,.6);margin-inline-start:-4px}
+#anc-slide .chip.hot{border-color:var(--flame);background:rgba(243,169,60,.14);font-weight:700}
+#anc-slide .chip.dim{opacity:.62}
+/* Gady, 18 Sep: "slide 22 how can we make it bigger that people could see?"
+   This slide only scales to 0.91, so the smallness was the type itself, not the fit. The card
+   tree here is READ, never navigated (unlike the interactive tree on slide 39 which shares
+   .ftcard), so it can afford bigger type and tighter padding -- scoped to #anc-slide so the
+   interactive tree is untouched. */
+#anc-slide .ftcard{width:146px;padding:8px 9px;gap:4px}
+#anc-slide .ftname{font-size:.92rem;line-height:1.18}
+#anc-slide .ftdate{font-size:.78rem;opacity:.8}
+#anc-slide .sibrow .sl{font-size:.86rem}
+#anc-slide .chip{font-size:.94rem;padding:.26rem .7rem}
+#anc-slide .chip img{width:30px;height:30px}
+@media (max-width:820px){#anc-slide .ftcard{width:118px}#anc-slide .ftname{font-size:.8rem}}
+@media (max-width:820px){#anc-slide .sibrow{gap:4px}#anc-slide .chip{font-size:.74rem;padding:.16rem .5rem}}
+#ftcanvas .ftcard.sho{box-shadow:0 0 0 1.5px #C6421E}
+#ftcanvas .ftcard.focal.sho{box-shadow:0 0 0 2px #d4af78,0 0 0 4.5px #C6421E}
+#ftcanvas .ftsho{position:absolute;left:-7px;top:-7px;font-size:.82rem;z-index:4;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
+.ftleg{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--ash-dim);margin-inline-start:10px}
+.ftleg b{color:#C6421E;font-weight:700}
+.ftbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:.2rem 0 .55rem}
+.ftbtn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:20px;border:1px solid #9a7636;background:#c9a25e;color:#2a1e08;cursor:pointer;font-weight:600}
+.ftbtn:hover{background:#d8b877}
+.fthint{font-size:.7rem;color:#6b5029;max-width:300px}
+.ftkids,.ftsibs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-top:.4rem;min-height:1.5rem}
+.ftlab{font-size:.74rem;color:#6b5029}
+.ftchip{font:inherit;font-size:.72rem;padding:3px 10px;border-radius:14px;border:1px solid;cursor:pointer;background:#182634;border-color:#3a586f;color:#eaf1f6}
+.ftchip.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
+#ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
+#ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
+#ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
+#ftcanvas .ftmaryr{font-size:.56rem;color:rgba(212,175,120,.95);white-space:nowrap;letter-spacing:.02em}
+#ftcanvas .ftplus{position:absolute;right:-14px;top:50%;transform:translateY(-50%);background:var(--gold,#d4af78);color:#241a0e;font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3}
+#ftcanvas .ftplus:hover{background:#e9c98c}
+#ftcanvas .ftcard{overflow:visible}
+#ftinfo{max-width:640px;margin:.4rem auto 0;background:rgba(45,32,16,.92);border:1px solid rgba(212,175,120,.5);border-radius:12px;padding:9px 15px;font-size:.86rem;line-height:1.6;color:#efe3cf;text-align:center;direction:rtl}
+#ftpath{color:#6b5029!important}
+#tree-slide.ftfull #ftpath,#tree-slide.ftfull .ftlab,#tree-slide.ftfull .fthint{color:#d8c39a!important}
+/* vertical orientation (ancestors upward) */
+#ftcanvas.vert .ftnode{flex-direction:column-reverse;align-items:center}
+#ftcanvas.vert .ftanc{flex-direction:row;justify-content:center;gap:16px;padding-bottom:22px}
+#ftcanvas.vert .ftanc::before{left:8%;right:8%;top:auto;bottom:11px;width:auto;height:2px}
+#ftcanvas.vert .ftanc::after{content:'';position:absolute;left:50%;bottom:0;width:2px;height:11px;background:rgba(212,175,120,.45)}
+#ftcanvas.vert .ftanc>.ftnode{margin-left:0}
+#ftcanvas.vert .ftanc>.ftnode::before{left:50%;top:100%;bottom:auto;width:2px;height:11px;background:rgba(212,175,120,.45)}
+#ftcanvas.vert .ftgen{flex-direction:row;align-items:flex-end;gap:10px}
+#ftcanvas.vert .ftplus{right:auto;left:50%;bottom:auto;top:-13px;transform:translateX(-50%)}
+#tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:8px 14px;overflow:hidden;transform:none!important}
+#tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important;display:flex;flex-direction:column;height:calc(100vh - 16px)}
+#tree-slide.ftfull .eyebrow,#tree-slide.ftfull h2{display:none}
+#tree-slide.ftfull #ftwrap{flex:1 1 auto;height:auto!important;min-height:120px}
+#tree-slide.ftfull #ftkids,#tree-slide.ftfull #ftsibs{flex:0 0 auto}
+#tree-slide.ftfull #ftinfo{flex:0 0 auto;max-height:18vh;overflow:auto;margin-top:.3rem}
+</style>
+<section class="slide no-fit no-nav" id="tree-slide" data-bg="dark" style="--night:#170f09">
+  <div class="wrap" style="max-width:1180px">
+    <div class="eyebrow slate" style="justify-content:center">הָאִילָן · אִינְטְרַאקְטִיבִי</div>
+    <h2 style="text-align:center;margin-bottom:.3rem">עֵץ הַמִּשְׁפָּחָה — לַחֲצוּ לְנַוֵּט</h2>
+    <div class="ftbar">
+      <button id="ft-back" class="ftbtn">◄ חזרה</button>
+      <button id="ft-reset" class="ftbtn">↺ התחלה</button>
+      <button id="ft-fit" class="ftbtn">⤢ התאם</button>
+      <button id="ft-full" class="ftbtn">⛶ מסך מלא</button>
+      <button id="ft-rot" class="ftbtn">⟲ אופקי</button>
+      <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
+      <button id="ft-zin" class="ftbtn">＋</button>
+      <button id="ft-zout" class="ftbtn">－</button>
+      <span class="ftleg"><b>🕯️</b> נספה/תה בשואה</span>
+      <span class="fthint">לחצו על אדם למקם אותו במרכז · על תמונה להגדלה · גררו והשתמשו בגלגלת להזזה וזום · חצים במקלדת מדפדפים בין השקפים</span>
+    </div>
+    <div id="ftwrap"><div id="ftcanvas" class="vert"></div></div>
+    <div id="ftkids" class="ftkids"></div>
+    <div id="ftsibs" class="ftsibs"></div>
+    <p id="ftpath" class="tiny" style="text-align:center;color:var(--ash-dim);margin-top:.3rem"></p>
+    <div id="ftinfo" style="display:none"></div>
+  </div>
+</section>
+
 <section class="slide" data-side="mom" data-bg="dark">
   <div class="wrap stack" style="align-items:flex-start">
     <div class="eyebrow"><span class="spark"></span>&nbsp;חלק א׳</div>
@@ -2747,111 +2852,6 @@ let rt;window.addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>
     <div class="candle" style="margin-top:.35rem"><span class="flame"></span><span class="wick"></span><span class="base"></span></div>
   </div>
 </section>
-
-<!-- 18d · interactive family-tree explorer -->
-<style>
-#ftwrap{position:relative;height:min(60vh,520px);overflow:hidden;border:1px solid rgba(212,175,120,.28);border-radius:12px;background:rgba(18,12,8,.55);cursor:grab;touch-action:none;direction:ltr}
-#ftcanvas{position:absolute;top:0;left:0;transform-origin:top left;will-change:transform;padding:12px}
-#ftcanvas .ftnode{display:flex;align-items:center}
-#ftcanvas .ftanc{position:relative;display:flex;flex-direction:column;justify-content:center;gap:10px}
-#ftcanvas .ftanc::before{content:'';position:absolute;left:0;top:10%;bottom:10%;width:2px;background:rgba(212,175,120,.45)}
-#ftcanvas .ftanc>.ftnode{margin-left:30px;position:relative}
-#ftcanvas .ftanc>.ftnode::before{content:'';position:absolute;left:-30px;top:50%;width:30px;height:2px;background:rgba(212,175,120,.45)}
-.ftcard{direction:rtl;width:130px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 8px;margin:4px 0;border-radius:10px;cursor:pointer;border:1px solid;position:relative;z-index:1;transition:transform .12s,box-shadow .12s}
-.ftcard:hover{transform:translateY(-2px)}
-.ftcard.m{background:#182634;border-color:#3a586f;color:#eaf1f6}
-.ftcard.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
-.ftcard.focal{box-shadow:0 0 0 2px #d4af78,0 6px 18px rgba(0,0,0,.45)}
-.ftph{width:50px;height:50px;border-radius:50%;object-fit:cover;border:2px solid rgba(212,175,120,.7);background:#3a3a3a}
-img.ftph{cursor:zoom-in}
-.ftsil{background:#4a4a4a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23a0a0a0' d='M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E") center/70% no-repeat}
-.ftname{font-weight:700;font-size:.72rem;line-height:1.15;text-align:center}
-.ftdate{font-size:.62rem;opacity:.72;direction:ltr}
-/* sibling band on the merged ancestry slide (#anc-slide) — compact chips so the
-   siblings from the old text tree fit without another full-height tree. */
-#anc-slide .sibsband{max-width:1000px;margin:.55rem auto 0;display:flex;flex-direction:column;gap:.3rem}
-#anc-slide .sibrow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center}
-#anc-slide .sibrow .sl{font-size:.72rem;color:var(--slate);font-family:var(--serif);margin-inline-end:4px;white-space:nowrap}
-#anc-slide .chip{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:100px;
-  padding:.2rem .6rem;font-size:.82rem;background:rgba(255,255,255,.04);white-space:nowrap}
-#anc-slide .chip img{width:26px;height:26px;border-radius:50%;object-fit:cover;border:1px solid rgba(212,175,120,.6);margin-inline-start:-4px}
-#anc-slide .chip.hot{border-color:var(--flame);background:rgba(243,169,60,.14);font-weight:700}
-#anc-slide .chip.dim{opacity:.62}
-/* Gady, 18 Sep: "slide 22 how can we make it bigger that people could see?"
-   This slide only scales to 0.91, so the smallness was the type itself, not the fit. The card
-   tree here is READ, never navigated (unlike the interactive tree on slide 39 which shares
-   .ftcard), so it can afford bigger type and tighter padding -- scoped to #anc-slide so the
-   interactive tree is untouched. */
-#anc-slide .ftcard{width:146px;padding:8px 9px;gap:4px}
-#anc-slide .ftname{font-size:.92rem;line-height:1.18}
-#anc-slide .ftdate{font-size:.78rem;opacity:.8}
-#anc-slide .sibrow .sl{font-size:.86rem}
-#anc-slide .chip{font-size:.94rem;padding:.26rem .7rem}
-#anc-slide .chip img{width:30px;height:30px}
-@media (max-width:820px){#anc-slide .ftcard{width:118px}#anc-slide .ftname{font-size:.8rem}}
-@media (max-width:820px){#anc-slide .sibrow{gap:4px}#anc-slide .chip{font-size:.74rem;padding:.16rem .5rem}}
-#ftcanvas .ftcard.sho{box-shadow:0 0 0 1.5px #C6421E}
-#ftcanvas .ftcard.focal.sho{box-shadow:0 0 0 2px #d4af78,0 0 0 4.5px #C6421E}
-#ftcanvas .ftsho{position:absolute;left:-7px;top:-7px;font-size:.82rem;z-index:4;pointer-events:none;filter:drop-shadow(0 1px 2px rgba(0,0,0,.6))}
-.ftleg{display:inline-flex;align-items:center;gap:5px;font-size:.75rem;color:var(--ash-dim);margin-inline-start:10px}
-.ftleg b{color:#C6421E;font-weight:700}
-.ftbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center;margin:.2rem 0 .55rem}
-.ftbtn{font:inherit;font-size:.78rem;padding:5px 12px;border-radius:20px;border:1px solid #9a7636;background:#c9a25e;color:#2a1e08;cursor:pointer;font-weight:600}
-.ftbtn:hover{background:#d8b877}
-.fthint{font-size:.7rem;color:#6b5029;max-width:300px}
-.ftkids,.ftsibs{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;margin-top:.4rem;min-height:1.5rem}
-.ftlab{font-size:.74rem;color:#6b5029}
-.ftchip{font:inherit;font-size:.72rem;padding:3px 10px;border-radius:14px;border:1px solid;cursor:pointer;background:#182634;border-color:#3a586f;color:#eaf1f6}
-.ftchip.f{background:#2c1c27;border-color:#71465b;color:#f6eaef}
-#ftcanvas .ftgen{display:flex;flex-direction:column;justify-content:center;gap:8px}
-#ftcanvas .ftcouple{display:flex;align-items:center;gap:5px;padding:5px;border:1px dashed rgba(212,175,120,.4);border-radius:12px;background:rgba(212,175,120,.05)}
-#ftcanvas .ftmar{color:rgba(212,175,120,.85);font-size:1.05rem;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;line-height:1;gap:2px}
-#ftcanvas .ftmaryr{font-size:.56rem;color:rgba(212,175,120,.95);white-space:nowrap;letter-spacing:.02em}
-#ftcanvas .ftplus{position:absolute;right:-14px;top:50%;transform:translateY(-50%);background:var(--gold,#d4af78);color:#241a0e;font-size:.66rem;font-weight:700;padding:1px 6px;border-radius:20px;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:3}
-#ftcanvas .ftplus:hover{background:#e9c98c}
-#ftcanvas .ftcard{overflow:visible}
-#ftinfo{max-width:640px;margin:.4rem auto 0;background:rgba(45,32,16,.92);border:1px solid rgba(212,175,120,.5);border-radius:12px;padding:9px 15px;font-size:.86rem;line-height:1.6;color:#efe3cf;text-align:center;direction:rtl}
-#ftpath{color:#6b5029!important}
-#tree-slide.ftfull #ftpath,#tree-slide.ftfull .ftlab,#tree-slide.ftfull .fthint{color:#d8c39a!important}
-/* vertical orientation (ancestors upward) */
-#ftcanvas.vert .ftnode{flex-direction:column-reverse;align-items:center}
-#ftcanvas.vert .ftanc{flex-direction:row;justify-content:center;gap:16px;padding-bottom:22px}
-#ftcanvas.vert .ftanc::before{left:8%;right:8%;top:auto;bottom:11px;width:auto;height:2px}
-#ftcanvas.vert .ftanc::after{content:'';position:absolute;left:50%;bottom:0;width:2px;height:11px;background:rgba(212,175,120,.45)}
-#ftcanvas.vert .ftanc>.ftnode{margin-left:0}
-#ftcanvas.vert .ftanc>.ftnode::before{left:50%;top:100%;bottom:auto;width:2px;height:11px;background:rgba(212,175,120,.45)}
-#ftcanvas.vert .ftgen{flex-direction:row;align-items:flex-end;gap:10px}
-#ftcanvas.vert .ftplus{right:auto;left:50%;bottom:auto;top:-13px;transform:translateX(-50%)}
-#tree-slide.ftfull{position:fixed;inset:0;z-index:300;background:#170f09;padding:8px 14px;overflow:hidden;transform:none!important}
-#tree-slide.ftfull .wrap{max-width:100%!important;transform:none!important;display:flex;flex-direction:column;height:calc(100vh - 16px)}
-#tree-slide.ftfull .eyebrow,#tree-slide.ftfull h2{display:none}
-#tree-slide.ftfull #ftwrap{flex:1 1 auto;height:auto!important;min-height:120px}
-#tree-slide.ftfull #ftkids,#tree-slide.ftfull #ftsibs{flex:0 0 auto}
-#tree-slide.ftfull #ftinfo{flex:0 0 auto;max-height:18vh;overflow:auto;margin-top:.3rem}
-</style>
-<section class="slide no-fit no-nav" id="tree-slide" data-bg="dark" style="--night:#170f09">
-  <div class="wrap" style="max-width:1180px">
-    <div class="eyebrow slate" style="justify-content:center">הָאִילָן · אִינְטְרַאקְטִיבִי</div>
-    <h2 style="text-align:center;margin-bottom:.3rem">עֵץ הַמִּשְׁפָּחָה — לַחֲצוּ לְנַוֵּט</h2>
-    <div class="ftbar">
-      <button id="ft-back" class="ftbtn">◄ חזרה</button>
-      <button id="ft-reset" class="ftbtn">↺ התחלה</button>
-      <button id="ft-fit" class="ftbtn">⤢ התאם</button>
-      <button id="ft-full" class="ftbtn">⛶ מסך מלא</button>
-      <button id="ft-rot" class="ftbtn">⟲ אופקי</button>
-      <button id="ft-sibs" class="ftbtn">אחים/אחיות: מוצג</button>
-      <button id="ft-zin" class="ftbtn">＋</button>
-      <button id="ft-zout" class="ftbtn">－</button>
-      <span class="ftleg"><b>🕯️</b> נספה/תה בשואה</span>
-      <span class="fthint">לחצו על אדם למקם אותו במרכז · על תמונה להגדלה · גררו והשתמשו בגלגלת להזזה וזום · חצים במקלדת מדפדפים בין השקפים</span>
-    </div>
-    <div id="ftwrap"><div id="ftcanvas" class="vert"></div></div>
-    <div id="ftkids" class="ftkids"></div>
-    <div id="ftsibs" class="ftsibs"></div>
-    <p id="ftpath" class="tiny" style="text-align:center;color:var(--ash-dim);margin-top:.3rem"></p>
-    <div id="ftinfo" style="display:none"></div>
-  </div>
-</section>
 <!-- APPENDIX divider · Gady, 18 Sep: the "how hard the research was" slides come out of the
      story and live here, so the evening keeps a flow. -->
 <section class="slide" data-bg="dark">
@@ -2969,19 +2969,19 @@ body{background:var(--night);color:var(--parchment)}
     <button data-s="2">🙋 מי אתם בסיפור?</button>
     <button data-s="4">🔍 איך נעשה המחקר</button>
     <button data-s="8">👧 אילנה · צד אמא</button>
-    <button data-s="12">🌳 עץ אמא · שפירו־גולבר</button>
-    <button data-s="20">🖼️ מהתמונה אל העץ</button>
-    <button data-s="25">👦 קובנה · צד אבא</button>
-    <button data-s="35">🌳 עץ אבא · מרגוליס־ברנר</button>
-    <button data-s="39">💞 המפגש</button>
-    <button data-s="41">🖼️ ארבע המשפחות</button>
-    <button data-s="42">👪 בני־הדוד השניים</button>
-    <button data-s="44">📜 מהארכיון אל העץ</button>
-    <button data-s="45">🗂️ פנקס המקורות</button>
-    <button data-s="47">🏚️ דוד קוליש · ראש המחנה</button>
-    <button data-s="50">🕯️ אזכרה</button>
-    <button data-s="54">✨ סיום · קריאה לפעולה</button>
-    <button data-s="55">🌲 העץ האינטראקטיבי</button>
+    <button data-s="10">🌲 העץ האינטראקטיבי</button>
+    <button data-s="13">🌳 עץ אמא · שפירו־גולבר</button>
+    <button data-s="21">🖼️ מהתמונה אל העץ</button>
+    <button data-s="26">👦 קובנה · צד אבא</button>
+    <button data-s="36">🌳 עץ אבא · מרגוליס־ברנר</button>
+    <button data-s="40">💞 המפגש</button>
+    <button data-s="42">🖼️ ארבע המשפחות</button>
+    <button data-s="43">👪 בני־הדוד השניים</button>
+    <button data-s="45">📜 מהארכיון אל העץ</button>
+    <button data-s="46">🗂️ פנקס המקורות</button>
+    <button data-s="48">🏚️ דוד קוליש · ראש המחנה</button>
+    <button data-s="51">🕯️ אזכרה</button>
+    <button data-s="55">✨ סיום · קריאה לפעולה</button>
     <button data-s="56">🔍 נספח · איך זה נעשה</button>
   </div>
 </div>
